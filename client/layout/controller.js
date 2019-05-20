@@ -143,7 +143,7 @@ export function updateLinkHref( item, nextQuery, excludedScreens ) {
 	 * 3 - Any string, eg "orders"
 	 * 4 - "?" or end of line
 	 */
-	const _exp = /(?<=page=wc-admin)(#\/)?(analytics\/)?(.*?)(\?|$)/;
+	const _exp = /page=wc-admin(#\/)?(analytics\/)?(.*?)(\?|$)/;
 	const wcAdminMatches = item.href.match( _exp );
 
 	if ( wcAdminMatches ) {
