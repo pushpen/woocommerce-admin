@@ -134,7 +134,7 @@ class Controller extends Component {
  */
 export function updateLinkHref( item, nextQuery, excludedScreens ) {
 	/**
-	 * Regular expression with a lookbehind for "page=wc-admin", matching any WooCommerce Admin screen.
+	 * Regular expression for finding any WooCommerce Admin screen.
 	 * The groupings are as follows:
 	 *
 	 * 0 - Full match
