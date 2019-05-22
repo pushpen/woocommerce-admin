@@ -5,6 +5,11 @@
 import { Component, createElement } from '@wordpress/element';
 
 /**
+ * WooCommerce dependencies
+ */
+import { updateQueryString } from '@woocommerce/navigation';
+
+/**
  * Internal depdencies
  */
 import Plugins from './steps/plugins';
@@ -27,6 +32,11 @@ const getSteps = () => {
 };
 
 export default class ProfileWizard extends Component {
+	constructor() {
+		super( ...arguments );
+		this.goToNextStep = this.goToNextStep.bind( this );
+	}
+
 	componentDidMount() {
 		document.documentElement.classList.remove( 'wp-toolbar' );
 		document.body.classList.add( 'woocommerce-profile-wizard__body' );
@@ -37,7 +47,11 @@ export default class ProfileWizard extends Component {
 		document.body.classList.remove( 'woocommerce-profile-wizard__body' );
 	}
 
-	getStep() {
+	closeWizard() {
+		// @todo This should close the wizard and mark the profiler as complete via the API.
+	}
+
+	getCurrentStep() {
 		const { step } = this.props.query;
 		const currentStep = getSteps().find( s => s.key === step );
 
@@ -48,10 +62,26 @@ export default class ProfileWizard extends Component {
 		return currentStep;
 	}
 
+	goToNextStep() {
+		const currentStep = this.getCurrentStep();
+		const currentStepIndex = getSteps().findIndex( s => s.key === currentStep.key );
+		const nextStep = getSteps()[ currentStepIndex + 1 ];
+
+		if ( 'undefined' === nextStep ) {
+			return this.closeWizard();
+		}
+
+		return updateQueryString( { step: nextStep.key } );
+	}
+
 	render() {
 		const { query } = this.props;
-		const step = this.getStep();
+		const step = this.getCurrentStep();
 
-		return createElement( step.container, { query } );
+		return createElement( step.container, {
+			query,
+			step,
+			goToNextStep: this.goToNextStep,
+		} );
 	}
 }
